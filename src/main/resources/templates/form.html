@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Food Order – Meal Form</title>
+</head>
+<body>
+<form method="post" th:action="${meal == null} ? @{/meals} : @{/meals/{id}(id=${meal.id})}">
+    <div>
+        <label for="name">Name</label>
+        <input type="text"
+               id="name"
+               name="name"
+               th:value="${meal?.name}"
+               required>
+    </div>
+    <div>
+        <label for="description">Description</label>
+        <textarea id="description"
+                  name="description"
+                  th:text="${meal?.description}"
+                  required></textarea>
+    </div>
+    <div>
+        <label for="availableDate">Available Date</label>
+        <input type="date"
+               id="availableDate"
+               name="availableDate"
+               th:value="${meal?.availableDate != null} ? ${#temporals.format(meal.availableDate, 'yyyy-MM-dd')} : null"
+               required>
+    </div>
+    <div>
+        <label for="portions">Portions</label>
+        <input type="number"
+               id="portions"
+               name="portions"
+               th:value="${meal?.portions}"
+               required>
+    </div>
+    <div>
+        <label for="mealType">Meal Type</label><br/>
+        <select id="mealType" name="mealType" required>
+            <option value="">-- Select --</option>
+            <option th:each="type : ${mealTypes}" th:text="${type}" th:value="${type}"
+                    th:selected="${meal?.mealType != null && meal.mealType == type}">[mealType]</option>
+        </select>
+    </div>
+    <div>
+        <label for="provider">Provider</label><br/>
+        <select id="provider" name="provider" required>
+            <option value="">-- Select --</option>
+            <option th:each="prov : ${providers}" th:text="${prov.name}" th:value="${prov.id}"
+                    th:selected="${meal?.provider != null && meal.provider.id == prov.id}">[provider.name]</option>
+        </select>
+    </div>
+
+    <button id="submit" type="submit">Submit</button>
+    <a id="back" href="/meals" type="button" class="btn btn-primary">Back to meals</a>
+</form>
+
+<div>
+    <ul id="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</div>
+
+</body>
+</html>

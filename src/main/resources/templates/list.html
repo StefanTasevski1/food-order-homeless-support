@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Food Order – Meals</title>
+</head>
+<body>
+
+<p th:if="${message}" th:text="${message}" style="color: green; font-weight: bold;"></p>
+
+<div>
+    <form id="filter-form" method="get" th:action="@{/meals}">
+        <label for="name">Name</label>
+        <input id="name" type="text" name="name" th:value="${filterName}"/>
+
+        <label for="mealType">Meal Type</label>
+        <select id="mealType" name="mealType">
+            <option value="">All</option>
+            <option th:each="type : ${mealTypes}" th:text="${type}" th:value="${type.name()}" th:selected="${filterMealType != null && filterMealType == type.name()}">[mealType]</option>
+        </select>
+
+        <label for="provider">Provider</label>
+        <select id="provider" name="provider">
+            <option value="">All</option>
+            <option th:each="provider : ${providers}" th:text="${provider.name}" th:value="${provider.id}" th:selected="${filterProvider != null && filterProvider == provider.id.toString()}">[provider.name]</option>
+        </select>
+
+        <button id="filter" type="submit">Filter</button>
+    </form>
+
+    <div>
+        <a href="/meals/add" class="add-item" sec:authorize="hasRole('ADMIN')">
+            Add new meal
+        </a>
+    </div>
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Available Date</th>
+            <th>Portions</th>
+            <th>Meal Type</th>
+            <th>Provider</th>
+            <th>Orders</th>
+            <th>Actions</th>
+        </tr>
+        <tr class="item" th:each="meal : ${meals}">
+            <td th:text="${meal.name}">[meal.name]</td>
+            <td th:text="${meal.description}">[meal.description]</td>
+            <td th:text="${meal.availableDate}">[meal.availableDate]</td>
+            <td th:text="${meal.portions}">[meal.portions]</td>
+            <td th:text="${meal.mealType}">[meal.mealType]</td>
+            <td th:text="${meal.provider.name}">[meal.provider.name]</td>
+            <td th:text="${meal.orderCount}">[meal.orderCount]</td>
+            <td>
+                <form method="post" th:action="@{/meals/delete/{id}(id=${meal.id})}" sec:authorize="hasRole('ADMIN')">
+                    <button type="submit" class="delete-item">Delete</button>
+                </form>
+                <a class="edit-item" th:href="@{/meals/edit/{id}(id=${meal.id})}" sec:authorize="hasRole('ADMIN')">Edit</a>
+                <form method="post" th:action="@{/meals/order/{id}(id=${meal.id})}" sec:authorize="hasRole('USER')">
+                    <button type="submit" class="extend-item">Order</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    <ul id="nav">
+        <li><a href="/">Home</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</div>
+</body>
+</html>
